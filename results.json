@@ -1,0 +1,130 @@
+{
+  "id": "3d1d1fee-4d79-49f4-8db8-071cf1a6d038",
+  "request_id": "G-3d1d1fee",
+  "version": 2,
+  "status": "done",
+  "created_at": "2025-11-17T13:55:00.899Z",
+  "completed_at": "2025-11-17T13:55:24.260Z",
+  "kind": "pre-recorded",
+  "file": {
+    "id": "d11f9f01-ca81-498f-a812-e2adae49f940",
+    "filename": "test_audio.wav",
+    "source": null,
+    "audio_duration": 3.27,
+    "number_of_channels": 2
+  },
+  "request_params": {
+    "audio_url": "https://api.gladia.io/file/d11f9f01-ca81-498f-a812-e2adae49f940",
+    "model": "solaria-1",
+    "sentences": false,
+    "subtitles": false,
+    "moderation": false,
+    "diarization": true,
+    "translation": false,
+    "audio_to_llm": false,
+    "display_mode": false,
+    "summarization": false,
+    "audio_enhancer": true,
+    "chapterization": false,
+    "custom_spelling": false,
+    "detect_language": true,
+    "language_config": {
+      "languages": [],
+      "code_switching": false
+    },
+    "name_consistency": false,
+    "sentiment_analysis": false,
+    "diarization_enhanced": false,
+    "punctuation_enhanced": false,
+    "enable_code_switching": false,
+    "named_entity_recognition": false,
+    "speaker_reidentification": false,
+    "accurate_words_timestamps": false,
+    "skip_channel_deduplication": false,
+    "structured_data_extraction": false
+  },
+  "result": {
+    "metadata": {
+      "audio_duration": 3.27,
+      "number_of_distinct_channels": 1,
+      "billing_time": 3.27,
+      "transcription_time": 23.361
+    },
+    "transcription": {
+      "languages": [
+        "ru"
+      ],
+      "utterances": [
+        {
+          "text": "Привет,",
+          "language": "ru",
+          "start": 1.08,
+          "end": 1.381,
+          "confidence": 0.83,
+          "channel": 0,
+          "words": [
+            {
+              "word": "Привет,",
+              "start": 1.08,
+              "end": 1.381,
+              "confidence": 0.83
+            }
+          ],
+          "speaker": 0
+        },
+        {
+          "text": "Миша!",
+          "language": "ru",
+          "start": 1.442,
+          "end": 1.723,
+          "confidence": 0.47,
+          "channel": 0,
+          "words": [
+            {
+              "word": " Миша!",
+              "start": 1.442,
+              "end": 1.723,
+              "confidence": 0.47
+            }
+          ],
+          "speaker": 0
+        },
+        {
+          "text": "Привет,",
+          "language": "ru",
+          "start": 2.044,
+          "end": 2.385,
+          "confidence": 0.65,
+          "channel": 0,
+          "words": [
+            {
+              "word": " Привет,",
+              "start": 2.044,
+              "end": 2.385,
+              "confidence": 0.65
+            }
+          ],
+          "speaker": 0
+        },
+        {
+          "text": "Теодор.",
+          "language": "ru",
+          "start": 2.425,
+          "end": 2.747,
+          "confidence": 0.4,
+          "channel": 0,
+          "words": [
+            {
+              "word": " Теодор.",
+              "start": 2.425,
+              "end": 2.747,
+              "confidence": 0.4
+            }
+          ],
+          "speaker": 0
+        }
+      ],
+      "full_transcript": "Привет, Миша! Привет, Теодор."
+    }
+  }
+}
