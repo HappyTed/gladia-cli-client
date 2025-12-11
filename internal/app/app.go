@@ -13,7 +13,7 @@ import (
 	"go-gladia.io-client/pkg/logger"
 )
 
-func WithoutCobra(audio string) {
+func RunWithoutCobra(audio string) {
 
 	log := logger.NewLogger(
 		logger.DEBUG,
