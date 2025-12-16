@@ -11,3 +11,7 @@ type UploadResponce struct {
 		NumOfChannels uint    `json:"number_of_channels"`
 	} `json:"audio_metadata"`
 }
+
+func (r *UploadResponce) Dump() []byte {
+	return nil
+}

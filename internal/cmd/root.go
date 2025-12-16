@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"go-gladia.io-client/internal/config"
 	"go-gladia.io-client/internal/entities/prerecorderv2"
+	"go-gladia.io-client/internal/logic"
 	"go-gladia.io-client/pkg/logger"
 	"go-gladia.io-client/pkg/networking"
 )
@@ -25,14 +26,12 @@ var rootCmd = &cobra.Command{
 	Long:    ``,
 }
 
-// ./app --audio my.wav upload // какой результат?
-// ./app --audio my.wav transcription // какой результат?
-// ./app --audio my.wav transcription --await --output "interview_2511.txt"
 func Execute(
 	ctx context.Context,
+	cfg config.Config,
 	log logger.ILogger,
-	cfg *config.Config,
-	uc usecase.,
+	uc logic.IUsecase,
+	client logic.IGladiaClient,
 ) error {
 
 	// flags set
@@ -41,8 +40,6 @@ func Execute(
 	rootCmd.PersistentFlags().StringVarP(&cfg.Token, "token", "a", cfg.Token, "gladia api token")
 	setUploadFlags()
 	setTranscriptionFlags(cfg)
-
-	
 
 	// set usaceses
 	uploadCmd.RunE = func(cmd *cobra.Command, args []string) error {

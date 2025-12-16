@@ -37,6 +37,7 @@ type ILogger interface {
 	FatalF(format string, a ...any)
 	Close() error
 }
+
 type Logger struct {
 	level           LogLevel
 	output          io.Writer

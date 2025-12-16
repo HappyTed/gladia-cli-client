@@ -2,7 +2,7 @@ package prerecorderv2
 
 type LanguageConf struct {
 	Languages     []string `json:"languages"`
-	CodeSwitching bool     `json:"code_switching"`
+	CodeSwitching bool     `json:"code_switching"` //
 }
 
 type DiarizationConf struct {

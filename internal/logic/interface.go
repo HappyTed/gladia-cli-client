@@ -19,7 +19,9 @@ type (
 
 	IUsecase interface {
 		Upload(filePath string) error
-		JsonDump(output string) error
-		TextDump(output string) error
+		Transcription() error
+		Info() error
+		List() error
+		Dump() error
 	}
 )
