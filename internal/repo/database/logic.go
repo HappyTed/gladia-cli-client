@@ -33,6 +33,7 @@ func (db *Database) CreateTable() error {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		file_path TEXT,
 		file_url TEXT,
+		result_url TEXT,
 		task_id TEXT,
 		status TEXT,
 		results BLOB
@@ -41,10 +42,10 @@ func (db *Database) CreateTable() error {
 	return err
 }
 
-func (db *Database) Insert(row Request) (int64, error) {
+func (db *Database) Insert(row Task) (int64, error) {
 	results, err := db.conn.Exec(
-		"INSERT INTO requests(file_path, file_url, task_id, status, results) VALUES (?, ?)",
-		row.FilePath, row.FileUrl, row.TaskID, row.Status, row.Results,
+		"INSERT INTO requests(file_path, file_url, result_url, task_id, status, results) VALUES (?, ?, ?, ?, ?, ?)",
+		row.FilePath, row.FileURL, row.ResultURL, row.TaskID, row.Status, row.Results,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -52,46 +53,46 @@ func (db *Database) Insert(row Request) (int64, error) {
 
 	id, err := results.LastInsertId()
 	if err != nil {
-		return 0, err
+		return -1, err
 	}
 	return id, nil
 }
 
-func (db *Database) GetByID(id int64) (Request, error) {
+func (db *Database) GetByID(id int64) (Task, error) {
 
 	query := `SELECT * FROM requests
 	WHERE id = ?`
 
 	row := db.conn.QueryRow(query, id)
 
-	var r Request
-	err := row.Scan(&r.ID, &r.FilePath, &r.FileUrl, &r.TaskID, &r.Status, &r.Results)
+	var r Task
+	err := row.Scan(&r.ID, &r.FilePath, &r.FileURL, &r.ResultURL, &r.TaskID, &r.Status, &r.Results)
 	return r, err
 }
 
-func (db *Database) GetByTaskID(taskID string) (Request, error) {
+func (db *Database) GetByTaskID(taskID string) (Task, error) {
 
 	query := `SELECT * FROM requests
 	WHERE task_id = ?`
 
 	row := db.conn.QueryRow(query, taskID)
 
-	var r Request
-	err := row.Scan(&r.ID, &r.FilePath, &r.FileUrl, &r.TaskID, &r.Status, &r.Results)
+	var r Task
+	err := row.Scan(&r.ID, &r.FilePath, &r.FileURL, &r.ResultURL, &r.TaskID, &r.Status, &r.Results)
 	return r, err
 }
 
-func (db *Database) GetAll() ([]Request, error) {
+func (db *Database) GetAll() ([]Task, error) {
 	rows, err := db.conn.Query("SELECT * FROM requests ORDER BY id")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var requests []Request
+	var requests []Task
 	for rows.Next() {
-		var r Request
-		rows.Scan(&r.ID, &r.FilePath, &r.FileUrl, &r.TaskID, &r.Status, &r.Results)
+		var r Task
+		rows.Scan(&r.ID, &r.FilePath, &r.FileURL, &r.ResultURL, &r.TaskID, &r.Status, &r.Results)
 		requests = append(requests, r)
 	}
 
@@ -101,29 +102,30 @@ func (db *Database) GetAll() ([]Request, error) {
 func (db *Database) Update(
 	id int64,
 	fileUrl string,
+	resultUrl string,
 	taskID string,
 	status string,
 	results []byte,
 ) error {
 
 	query := `UPDATE requests 
-SET file_url = ?, task_id = ?, status = ?, results = ? 
+SET file_url = ?, result_url = ?, task_id = ?, status = ?, results = ? 
 WHERE id = ?`
 
 	_, err := db.conn.Exec(
 		query,
-		fileUrl, taskID, status, results,
+		fileUrl, resultUrl, taskID, status, results, id,
 	)
 
 	return err
 }
 
-func (db *Database) DeleteByID(id int64) error {
+func (db *Database) RemoveByID(id int64) error {
 	_, err := db.conn.Exec("DELETE FROM requests WHERE id = ?", id)
 	return err
 }
 
-func (db *Database) DeleteByTaskID(taskID string) error {
+func (db *Database) RemoveByTaskID(taskID string) error {
 	_, err := db.conn.Exec("DELETE FROM requests WHERE task_id = ?", taskID)
 	return err
 }

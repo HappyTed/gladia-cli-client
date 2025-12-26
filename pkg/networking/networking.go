@@ -38,17 +38,6 @@ func HttpErrorParse(resp *http.Response, expectedStatusCode int) error {
 }
 
 func JsonDumpS(data any) (string, error) {
-	fmt.Println("Try print JSON...")
 	s, err := json.MarshalIndent(data, "", "  ")
 	return string(s), err
-}
-
-func PrintJson(data any) {
-	fmt.Println("Try print JSON...")
-	b, err := json.MarshalIndent(data, "", "  ")
-	if err != nil {
-		fmt.Println("JSON conversion error:", err)
-		return
-	}
-	fmt.Println(string(b))
 }

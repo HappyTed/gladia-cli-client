@@ -11,6 +11,7 @@ import (
 type Config struct {
 	Token          string          `env:"API_KEY" env-required:"true"`
 	BaseUrl        string          `env:"URL" env-default:"https://api.gladia.io"`
+	AppEnv         string          `env:"ENV" env-default:"DEV"` // Среда, где запускается приложение
 	LogLevel       logger.LogLevel `env:"LOG_LEVEL" env-default:"0"`
 	LogPath        string          `env:"LOG_PATH" env-default:"logs/app.log"`
 	RequestTimeout time.Duration   `env:"LOG_FORMATTER" env-default:"0"`
@@ -28,18 +29,20 @@ type (
 		OutputFile    string
 	}
 
+	// read from env
 	Transcription struct {
-		Diarization          bool
-		Enhanced             bool
-		Speakers             *uint8
-		MaxSpeakers          *uint8
-		MinSpeakers          *uint8
-		Translation          bool
-		TranslationLanguages []string
-		SentimentAnalysis    bool
-		Languages            []string
+		Diarization       bool
+		Enhanced          bool
+		Speakers          *uint8
+		MaxSpeakers       *uint8
+		MinSpeakers       *uint8
+		Translation       bool
+		TargetLanguages   []string
+		SentimentAnalysis bool
+		InputLanguages    []string
 	}
 
+	// read from env
 	Database struct {
 		DSN    string
 		Driver string
@@ -50,8 +53,9 @@ func LoadConfig() *Config {
 	cfg := &Config{
 		Token:          "",
 		BaseUrl:        "https://api.gladia.io",
+		AppEnv:         "DEV",
 		LogLevel:       logger.DEBUG,
-		LogPath:        "logs/app.log",
+		LogPath:        "/tmp/app.log",
 		RequestTimeout: 0,
 		Transcription: Transcription{
 			Diarization:       false,
@@ -66,8 +70,8 @@ func LoadConfig() *Config {
 		},
 	}
 
-	if err := cleanenv.ReadEnv(&cfg); err != nil {
-		log.Fatal(err)
+	if err := cleanenv.ReadEnv(cfg); err != nil {
+		log.Fatal("fail to read env: ", err)
 	}
 
 	return cfg

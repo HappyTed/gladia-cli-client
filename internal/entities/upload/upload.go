@@ -1,7 +1,8 @@
 package upload
 
+// POST /v2/upload
 type UploadResponce struct {
-	AudioUrl string `json:"audio_url"`
+	AudioUrl string `json:"audio_url"` // Uploaded audio file Gladia URL. Example: "https://api.gladia.io/file/6c09400e-23d2-4bd2-be55-96a5ececfa3b"
 	MetaData struct {
 		ID            string  `json:"id"`
 		FileName      string  `json:"filename"`

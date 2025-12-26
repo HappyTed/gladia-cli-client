@@ -1,27 +1,33 @@
 package logic
 
 import (
-	"context"
 	"os"
-	"time"
 
+	"go-gladia.io-client/internal/config"
 	"go-gladia.io-client/internal/entities/prerecorderv2"
 	"go-gladia.io-client/internal/entities/upload"
+	"go-gladia.io-client/internal/repo/database"
 )
 
 type (
 	IGladiaClient interface {
 		AudioUploadFromFile(file *os.File) (*upload.UploadResponce, error)
 		InitTranscription(body *prerecorderv2.PreRecorderBody) (*prerecorderv2.PreRecorderInitResponse, error)
-		TranscriptionResult(jobId string, timeInterval time.Duration) (*prerecorderv2.PreRecorderResultResponse, error)
-		AwaitTranscriptionResult(ctx context.Context, jobId string, timeInterval time.Duration) (*prerecorderv2.PreRecorderResultResponse, error)
+		GetTranscriptionResult(jobId string) (*prerecorderv2.PreRecorderResultResponse, error)
 	}
 
 	IUsecase interface {
-		Upload(filePath string) error
-		Transcription() error
-		Info() error
-		List() error
+		// Загрузить файл для транскрибации
+		Upload(filePath string) (int64, error)
+		// Запустить задачу на транскрибацию
+		Transcription(cfg config.Config, id int64) (string, error)
+		// Информация о статусе задачи
+		Info(id int64) (database.Task, error)
+		// Ожидать результат
+		PollingResult(id int64) error
+		// Список задач, загруженных через клиент
+		List() ([]database.Task, error)
+		// Сдампить результат в файл
 		Dump() error
 	}
 )

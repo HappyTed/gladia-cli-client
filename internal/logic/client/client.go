@@ -2,7 +2,6 @@ package client
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -106,7 +105,11 @@ func (gc *GladiaClient) AudioUploadFromFile(file *os.File) (*upload.UploadRespon
 	var responseBody upload.UploadResponce
 	err = json.NewDecoder(resp.Body).Decode(&responseBody)
 
-	networking.PrintJson(responseBody)
+	s, err := networking.JsonDumpS(responseBody)
+	if err != nil {
+		gc.log.Error("response parsing error:", err)
+	}
+	gc.log.Debug("Response:", s)
 
 	err = networking.HttpErrorParse(resp, 200)
 	if err != nil {
@@ -126,7 +129,11 @@ func (gc *GladiaClient) InitTranscription(body *prerecorderv2.PreRecorderBody) (
 
 	gc.log.Debug("Try do request:", gc.baseUrlPath+path)
 
-	networking.PrintJson(body)
+	s, err := networking.JsonDumpS(body)
+	if err != nil {
+		gc.log.Debug("body parsing error:", err)
+	}
+	gc.log.Debug("Body:", s)
 
 	req, err := http.NewRequest(method, gc.baseUrlPath+path, bytes.NewBuffer(jsonBody))
 	if err != nil {
@@ -149,12 +156,16 @@ func (gc *GladiaClient) InitTranscription(body *prerecorderv2.PreRecorderBody) (
 	var responseBody prerecorderv2.PreRecorderInitResponse
 	err = json.NewDecoder(resp.Body).Decode(&responseBody)
 
-	networking.PrintJson(responseBody)
+	s, err = networking.JsonDumpS(responseBody)
+	if err != nil {
+		gc.log.Debug("response parsing error:", err)
+	}
+	gc.log.Debug("Response:", s)
 
 	return &responseBody, err
 }
 
-func (gc *GladiaClient) TranscriptionResult(jobId string, timeInterval time.Duration) (*prerecorderv2.PreRecorderResultResponse, error) {
+func (gc *GladiaClient) GetTranscriptionResult(jobId string) (*prerecorderv2.PreRecorderResultResponse, error) {
 	path := fmt.Sprintf("/v2/pre-recorded/%s", jobId)
 	method := "GET"
 
@@ -180,30 +191,34 @@ func (gc *GladiaClient) TranscriptionResult(jobId string, timeInterval time.Dura
 	var responseBody prerecorderv2.PreRecorderResultResponse
 	err = json.NewDecoder(resp.Body).Decode(&responseBody)
 
-	networking.PrintJson(responseBody)
+	s, err := networking.JsonDumpS(responseBody)
+	if err != nil {
+		gc.log.Debug("response parsing error:", err)
+	}
+	gc.log.Debug("Response:", s)
 
 	return &responseBody, err
 }
 
-func (gc *GladiaClient) AwaitTranscriptionResult(ctx context.Context, jobId string, timeInterval time.Duration) (*prerecorderv2.PreRecorderResultResponse, error) {
+// func (gc *GladiaClient) AwaitTranscriptionResult(ctx context.Context, jobId string, timeInterval time.Duration) (*prerecorderv2.PreRecorderResultResponse, error) {
 
-	ticker := time.NewTicker(timeInterval)
-	defer ticker.Stop()
+// 	ticker := time.NewTicker(timeInterval)
+// 	defer ticker.Stop()
 
-	for {
-		select {
-		case <-ctx.Done():
-			return nil, errors.New("timeout waiting result")
-		case <-ticker.C:
-			resp, err := gc.TranscriptionResult(jobId, timeInterval)
-			if err != nil {
-				return nil, err
-			} else if resp.Status == "error" {
-				return nil, fmt.Errorf("error: %s", resp.ErrorCode)
-			} else if resp.Status == "done" {
-				gc.result = resp.Result
-				return resp, nil
-			}
-		}
-	}
-}
+// 	for {
+// 		select {
+// 		case <-ctx.Done():
+// 			return nil, errors.New("timeout waiting result")
+// 		case <-ticker.C:
+// 			resp, err := gc.GetTranscriptionResult(jobId, timeInterval)
+// 			if err != nil {
+// 				return nil, err
+// 			} else if resp.Status == "error" {
+// 				return nil, fmt.Errorf("error: %s", resp.ErrorCode)
+// 			} else if resp.Status == "done" {
+// 				gc.result = resp.Result
+// 				return resp, nil
+// 			}
+// 		}
+// 	}
+// }

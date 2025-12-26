@@ -2,11 +2,11 @@ package database
 
 type IDatabase interface {
 	CreateTable() error
-	Insert(Request) (int64, error)
-	GetByID(int64) (Request, error)
-	GetByTaskID(string) (Request, error)
-	GetAll() ([]Request, error)
-	Update(id int64, fileUrl string, taskID string, status string, results []byte) error
-	DeleteByID(id int64) error
-	DeleteByTaskID(taskID string) error
+	Insert(Task) (int64, error)
+	GetByID(int64) (Task, error)
+	GetByTaskID(string) (Task, error)
+	GetAll() ([]Task, error)
+	Update(id int64, fileUrl string, resultUrl string, taskID string, status string, results []byte) error
+	RemoveByID(id int64) error
+	RemoveByTaskID(taskID string) error
 }
