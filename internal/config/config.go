@@ -5,19 +5,16 @@ import (
 	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
-	"go-gladia.io-client/pkg/logger"
 )
 
 type Config struct {
-	Token          string          `env:"API_KEY" env-required:"true"`
-	BaseUrl        string          `env:"URL" env-default:"https://api.gladia.io"`
-	AppEnv         string          `env:"ENV" env-default:"DEV"` // Среда, где запускается приложение
-	LogLevel       logger.LogLevel `env:"LOG_LEVEL" env-default:"0"`
-	LogPath        string          `env:"LOG_PATH" env-default:"logs/app.log"`
-	RequestTimeout time.Duration   `env:"LOG_FORMATTER" env-default:"0"`
+	Token   string `env:"API_KEY" env-required:"true"`
+	BaseUrl string `env:"BASE_URL" env-default:"https://api.gladia.io"`
+	IsDebug bool
 	Flags
-	Transcription
-	Database
+	TranscriptionConfig
+	HTTPClientConfig
+	WSClientConfig
 }
 
 type (
@@ -29,8 +26,15 @@ type (
 		OutputFile    string
 	}
 
+	HTTPClientConfig struct {
+		Timeout    time.Duration
+		MaxRetries uint8
+	}
+
+	WSClientConfig struct{}
+
 	// read from env
-	Transcription struct {
+	TranscriptionConfig struct {
 		Diarization       bool
 		Enhanced          bool
 		Speakers          *uint8
@@ -40,12 +44,6 @@ type (
 		TargetLanguages   []string
 		SentimentAnalysis bool
 		InputLanguages    []string
-	}
-
-	// read from env
-	Database struct {
-		DSN    string
-		Driver string
 	}
 )
 

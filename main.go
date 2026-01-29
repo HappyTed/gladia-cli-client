@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"go-gladia.io-client/internal/cmd"
@@ -11,38 +12,21 @@ import (
 	"go-gladia.io-client/internal/logic/client"
 	"go-gladia.io-client/internal/logic/usecase"
 	"go-gladia.io-client/internal/repo"
-	"go-gladia.io-client/internal/repo/database"
 	"go-gladia.io-client/pkg/logger"
 )
-
-func init() {
-	/* TODO:
-	1) mkdir ~/.config/myapp/ ~/.local/share/myapp/
-	2) dump config ~/.config/myapp/config.yml
-	3) logs: ~/.local/share/myapp/myapp.log
-	4) data: ~/.local/share/myapp/myapp.db
-	*/
-}
 
 func main() {
 	cfg := config.LoadConfig()
 
 	log := logger.NewLogger(
 		cfg.LogLevel,
-		logger.FILE|logger.STD,
-		cfg.LogPath,
 	)
 
 	// repo
-	database, err := database.New("sqlite3", "/tmp/test.db")
-	if err != nil {
-		log.Fatal(err)
-		os.Exit(1)
-	}
 
-	fileRepo, err := repo.NewFilesRepo(log)
+	fileRepo, err := repo.NewFilesRepo()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		os.Exit(1)
 	}
 
@@ -54,13 +38,12 @@ func main() {
 		client.WithTimeout(cfg.RequestTimeout),
 	)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		os.Exit(1)
 	}
 
 	uc, err := usecase.New(
 		usecase.WithLogger(log),
-		usecase.WithDatabase(database),
 		usecase.WithFileRepo(*fileRepo),
 		usecase.WithHttpClient(gaClient),
 	)

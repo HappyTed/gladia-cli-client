@@ -1,17 +1,15 @@
-package networking
+package http_client
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"os"
 )
 
-func MakeMultipartBody(file *os.File, key string, value string) (*bytes.Buffer, string, error) {
+func makeMultipartBody(file *os.File, key string, value string) (*bytes.Buffer, string, error) {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 	defer writer.Close()
@@ -26,18 +24,11 @@ func MakeMultipartBody(file *os.File, key string, value string) (*bytes.Buffer, 
 	return body, writer.FormDataContentType(), nil
 }
 
-func HttpErrorParse(resp *http.Response, expectedStatusCode int) error {
+func httpErrorParse(resp *http.Response, expectedStatusCode int) error {
 
-	fmt.Println("Request Status:", resp.Status)
-	fmt.Println("Status code:", resp.StatusCode)
 	if resp.StatusCode != expectedStatusCode {
 		return errors.New("unexpected status code")
 	}
 
 	return nil
-}
-
-func JsonDumpS(data any) (string, error) {
-	s, err := json.MarshalIndent(data, "", "  ")
-	return string(s), err
 }

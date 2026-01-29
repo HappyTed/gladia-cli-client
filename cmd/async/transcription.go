@@ -1,4 +1,4 @@
-package cmd
+package async
 
 import (
 	"github.com/spf13/cobra"
@@ -6,8 +6,8 @@ import (
 )
 
 var transcriptionCmd = &cobra.Command{
-	Use:   "transcription",
-	Short: "Transcription audio",
+	Use:   "start",
+	Short: "Create a task to transcribe audio",
 }
 
 func setTranscriptionFlags(cfg *config.Config) {
